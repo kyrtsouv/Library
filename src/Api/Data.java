@@ -2,11 +2,19 @@ package Api;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeSet;
+
+import java.util.Comparator;
+import java.io.Serializable;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class Data implements java.io.Serializable {
 
@@ -17,16 +25,26 @@ public class Data implements java.io.Serializable {
     private HashSet<String> emails;
     private HashSet<String> ADTs;
 
-    private HashSet<Book> books;
+    private TreeSet<Book> books;
     private HashMap<String, HashSet<Book>> genreToBooks;
     private HashMap<Book, String> bookToGenre;
+
+    private class BookComparator implements Comparator<Book>, Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public int compare(Book b1, Book b2) {
+            return b2.getRating() - b1.getRating();
+        }
+    }
 
     private Data() {
         users = new HashMap<>();
         emails = new HashSet<>();
         ADTs = new HashSet<>();
 
-        books = new HashSet<>();
+        books = new TreeSet<>(new BookComparator());
     }
 
     public static Data load() {
@@ -42,9 +60,13 @@ public class Data implements java.io.Serializable {
 
     public void save() {
         try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("medialab/data.ser"));
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("medialab/tempData.ser"));
             out.writeObject(this);
             out.close();
+
+            Files.copy(Paths.get("medialab/tempData.ser"), Paths.get("medialab/data.ser"),
+                    StandardCopyOption.REPLACE_EXISTING);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -75,12 +97,12 @@ public class Data implements java.io.Serializable {
         throw new IllegalArgumentException("Λάθος όνομα χρήστη ή κωδικός πρόσβασης");
     }
 
-    public HashSet<Book> getBooks() {
-        return books;
-    }
-
     // For setup
     public void addAdmin(Admin admin) {
         users.put(admin.getUsername(), admin);
+    }
+
+    public TreeSet<Book> getBooks() {
+        return books;
     }
 }

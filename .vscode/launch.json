@@ -15,7 +15,7 @@
             "type": "java",
             "name": "Main",
             "request": "launch",
-            "mainClass": "MVC.Main",
+            "mainClass": "Gui.App",
             "projectName": "Library_b524ee1c",
             "vmArgs": "--module-path C:/\"Program Files\"/Java/javafx-sdk-21.0.2/lib --add-modules javafx.controls,javafx.fxml"
         },

@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 
@@ -18,6 +19,8 @@ public class Form extends BorderPane {
     private int rows = 0;
     private GridPane formPane;
     private Button submitButton;
+
+    private Label errorLabel;
 
     private HashMap<String, TextField> fields = new HashMap<>();
 
@@ -67,6 +70,18 @@ public class Form extends BorderPane {
         HashMap<String, String> data = new HashMap<>();
         fields.forEach((label, field) -> data.put(label, field.getText()));
         return data;
+    }
+
+    public void printError(String error) {
+
+        if (errorLabel == null) {
+            errorLabel = new Label(error);
+            errorLabel.setTextFill(javafx.scene.paint.Color.RED);
+            errorLabel.setWrapText(true);
+            errorLabel.setTextAlignment(TextAlignment.CENTER);
+
+            formPane.add(errorLabel, 0, rows, 2, 1);
+        }
     }
 
 }
