@@ -1,4 +1,4 @@
-package Gui.Admin.EditPanels;
+package Gui.Admin.AddPanels;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -64,6 +64,7 @@ public class AddBook extends Pane {
                 controller.addBook(new Book(titleField.getText(), authorField.getText(), publisherField.getText(),
                         isbnField.getText(), yearField.getText(),
                         Integer.parseInt(copiesField.getText())), genreComboBox.getValue());
+                controller.goBack();
             }
         });
 

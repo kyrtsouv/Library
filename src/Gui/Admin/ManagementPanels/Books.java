@@ -1,5 +1,7 @@
 package Gui.Admin.ManagementPanels;
 
+import javafx.collections.ObservableMap;
+import javafx.collections.ObservableSet;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -8,6 +10,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,11 +46,30 @@ public class Books extends Pane {
         VBox outerBooksBox = new VBox();
         outerBooksBox.setAlignment(Pos.CENTER);
 
-        HashMap<String, HashSet<Book>> gtb = controller.getGenreToBooks();
+        controller.getGtbProperty().addListener((obs, oldVal, newVal) -> {
+            buildBooksBox(newVal);
+        });
+
+        buildBooksBox(controller.getGtbProperty().getValue());
+
+        panel.setCenter(outerBooksBox);
+        getChildren().add(panel);
+
+    }
+
+    public void buildBooksBox(ObservableMap<String, ObservableSet<Book>> gtb) {
+        VBox outerBooksBox = new VBox();
+        outerBooksBox.setAlignment(Pos.CENTER);
+
         for (String genre : gtb.keySet()) {
+            if (gtb.get(genre).isEmpty()) {
+                continue;
+            }
             BorderPane genrePane = new BorderPane();
 
             Label genreLabel = new Label(genre);
+            genreLabel.setAlignment(Pos.CENTER);
+            genreLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
             genrePane.setTop(genreLabel);
 
             FlowPane booksPane = new FlowPane();
@@ -62,8 +85,6 @@ public class Books extends Pane {
         }
 
         panel.setCenter(outerBooksBox);
-        getChildren().add(panel);
-
     }
 
 }

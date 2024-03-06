@@ -6,6 +6,21 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Test",
+            "request": "launch",
+            "mainClass": "Test",
+            "projectName": "Library_b524ee1c"
+        },
+        {
+            "type": "java",
+            "name": "DynamicBooksDisplay",
+            "request": "launch",
+            "mainClass": "DynamicBooksDisplay",
+            "projectName": "Library_b524ee1c",
+            "vmArgs": "--module-path C:/\"Program Files\"/Java/javafx-sdk-21.0.2/lib --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
             "name": "MakeAdmin",
             "request": "launch",
             "mainClass": "MakeAdmin",
