@@ -1,108 +1,93 @@
 package MVC;
 
-import Api.Book;
 import Api.Data;
 import Api.GenericUser;
 import Api.User;
+import Api.Book;
 
 import Gui.HomePane;
-import Gui.Form;
-import Gui.BookPane;
-
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.TilePane;
+import Gui.Admin.Admin;
+import Gui.Admin.EditPanels.AddBook;
+import Gui.Admin.ManagementPanels.Books;
+import Gui.Admin.ManagementPanels.Genres;
+import Gui.Admin.ManagementPanels.Lending;
+import Gui.Admin.ManagementPanels.Users;
+import Gui.App;
+import Gui.UserPane;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 public class Controller {
 
-    private Form signUpForm;
-    private Form signInForm;
-
-    private HomePane homePane;
+    private App app;
 
     Data data;
 
-    public Controller() {
+    public Controller(App app) {
+        this.app = app;
+
         data = Data.load();
-
-        signUpForm = new Form("Εγγραφή", new Button("Εγγραφή"));
-        signUpForm.addField("Όνομα Χρήστη", new TextField());
-        signUpForm.addField("Κωδικός", new PasswordField());
-        signUpForm.addField("Όνομα", new TextField());
-        signUpForm.addField("Επώνυμο", new TextField());
-        signUpForm.addField("ΑΔΤ", new TextField());
-        signUpForm.addField("Email", new TextField());
-        signUpForm.addEventHandler(() -> {
-            HashMap<String, String> signUpData = signUpForm.getData();
-            try {
-                String name = signUpData.get("Όνομα");
-                String surname = signUpData.get("Επώνυμο");
-                String adt = signUpData.get("ΑΔΤ");
-                String email = signUpData.get("Email");
-                String username = signUpData.get("Όνομα Χρήστη");
-                String password = signUpData.get("Κωδικός");
-                if (name.isEmpty() || surname.isEmpty() || adt.isEmpty() || email.isEmpty() || username.isEmpty()
-                        || password.isEmpty()) {
-                    throw new IllegalArgumentException("Όλα τα πεδία είναι υποχρεωτικά");
-                }
-                User user = new User(name, surname, adt, email, username, password);
-                data.addUser(user);
-
-                System.out.println("Επιτυχής εγγραφή");
-            } catch (Exception e) {
-                signUpForm.printError(e.getMessage());
-            }
-
-        });
-
-        signInForm = new Form("Σύνδεση", new Button("Σύνδεση"));
-        signInForm.addField("Όνομα Χρήστη", new TextField());
-        signInForm.addField("Κωδικός", new PasswordField());
-        signInForm.addEventHandler(() -> {
-            HashMap<String, String> signInData = signInForm.getData();
-
-            try {
-                GenericUser user = data.getUser(signInData.get("Όνομα Χρήστη"), signInData.get("Κωδικός"));
-                System.out.println("Επιτυχής σύνδεση");
-            } catch (Exception e) {
-                signInForm.printError(e.getMessage());
-            }
-        });
-
-        ScrollPane scrollPane = new ScrollPane();
-
-        TilePane books = new TilePane();
-        books.setHgap(10);
-        books.setVgap(10);
-        books.setPadding(new javafx.geometry.Insets(10, 10, 10, 10));
-
-        int i = 0;
-        while (i < 5 && data.getBooks().iterator().hasNext()) {
-            books.getChildren().add(new BookPane(data.getBooks().iterator().next()));
-            i++;
-        }
-
-        scrollPane.setContent(books);
-        scrollPane.setFitToWidth(true);
-
-        homePane = new HomePane(this, signUpForm, signInForm, scrollPane);
-    }
-
-    public HomePane getHomePane() {
-        return homePane;
-    }
-
-    // Must return 5 books with top rating
-    public HashSet<Book> getBestBooks() {
-        return new HashSet<>();
     }
 
     public void saveData() {
         data.save();
+    }
+
+    // ----------------- Show Panes -----------------
+
+    public void showAddBookBox() {
+        app.setView(new AddBook(this), true);
+    }
+
+    public void showBooksManagerPane() {
+        app.setView(new Books(this), true);
+    }
+
+    public void showGenresManagerPane() {
+        app.setView(new Genres(this), true);
+    }
+
+    public void showUsersManagerPane() {
+        app.setView(new Users(this), true);
+    }
+
+    public void showLendingManagerPane() {
+        app.setView(new Lending(this), true);
+    }
+
+    public void showUserPanel(User user) {
+        app.setView(new UserPane(this, user), true);
+    }
+
+    public void showAdminPanel() {
+        app.setView(new Admin(this), true);
+    }
+
+    // ----------------- Getters -----------------
+    public GenericUser getUser(String username, String password) {
+        return data.getUser(username, password);
+    }
+
+    public Set<Book> getBooks() {
+        return data.getBooks();
+    }
+
+    public Set<String> getGenres() {
+        return data.getGenreToBooks().keySet();
+    }
+
+    public HashMap<String, HashSet<Book>> getGenreToBooks() {
+        return data.getGenreToBooks();
+    }
+
+    // ----------------- Adders -----------------
+    public void addBook(Book book, String genre) {
+        data.addBook(book, genre);
+    }
+
+    public void addUser(User user) {
+        data.addUser(user);
     }
 }

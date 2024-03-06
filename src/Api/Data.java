@@ -45,6 +45,8 @@ public class Data implements java.io.Serializable {
         ADTs = new HashSet<>();
 
         books = new TreeSet<>(new BookComparator());
+        genreToBooks = new HashMap<>();
+        bookToGenre = new HashMap<>();
     }
 
     public static Data load() {
@@ -104,5 +106,9 @@ public class Data implements java.io.Serializable {
 
     public TreeSet<Book> getBooks() {
         return books;
+    }
+
+    public HashMap<String, HashSet<Book>> getGenreToBooks() {
+        return genreToBooks;
     }
 }

@@ -6,14 +6,14 @@ public class Book implements java.io.Serializable {
     private String title;
     private String author;
     private String publisher;
-    private int isbn;
-    private int year;
+    private String isbn;
+    private String year;
     private int copies;
 
     private int rating;
     private HashSet<String> reviews;
 
-    public Book(String title, String author, String publisher, int isbn, int year, int copies) {
+    public Book(String title, String author, String publisher, String isbn, String year, int copies) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
@@ -37,11 +37,11 @@ public class Book implements java.io.Serializable {
         return publisher;
     }
 
-    public int getIsbn() {
+    public String getIsbn() {
         return isbn;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
