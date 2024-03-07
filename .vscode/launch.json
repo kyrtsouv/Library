@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "PropertyTest",
+            "request": "launch",
+            "mainClass": "PropertyTest",
+            "projectName": "Library_b524ee1c"
+        },
+        {
+            "type": "java",
             "name": "Test",
             "request": "launch",
             "mainClass": "Test",

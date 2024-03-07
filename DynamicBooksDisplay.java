@@ -13,9 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Scanner;
 
 import Api.Book;
 import Gui.BookPane;

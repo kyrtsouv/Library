@@ -9,7 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -38,7 +37,7 @@ public class App extends Application {
 
         stage.setTitle("Βιβλιοθήκη");
 
-        Scene scene = new Scene(buildScrollPane());
+        Scene scene = new Scene(buildScrollPane(), 800, 600);
         scene.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() == MouseButton.BACK) {
                 goBack();

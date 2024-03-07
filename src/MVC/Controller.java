@@ -1,7 +1,8 @@
 package MVC;
 
-import Api.Data;
+import Api.DataStorer;
 import Api.GenericUser;
+import Api.OrderedBookSet;
 import Api.User;
 import Api.Book;
 
@@ -11,15 +12,13 @@ import Gui.Admin.ManagementPanels.Books;
 import Gui.Admin.ManagementPanels.Genres;
 import Gui.Admin.ManagementPanels.Lending;
 import Gui.Admin.ManagementPanels.Users;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import Gui.App;
 import Gui.UserPane;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 public class Controller {
 
@@ -30,7 +29,7 @@ public class Controller {
     public Controller(App app) {
         this.app = app;
 
-        dataHandler = new DataHandler(Data.load());
+        dataHandler = new DataHandler(DataStorer.load());
     }
 
     public void saveData() {
@@ -76,15 +75,19 @@ public class Controller {
         return dataHandler.getUser(username, password);
     }
 
-    public Set<Book> getBooks() {
+    public ObservableSet<Book> getObservedBooks() {
+        return dataHandler.getObservedBooks();
+    }
+
+    public OrderedBookSet getBooks() {
         return dataHandler.getBooks();
     }
 
-    public Set<String> getGenres() {
-        return dataHandler.getGenreToBooks().keySet();
+    public HashSet<String> getGenres() {
+        return new HashSet<>(dataHandler.getGenreToBooks().keySet());
     }
 
-    public HashMap<String, HashSet<Book>> getGenreToBooks() {
+    public HashMap<String, OrderedBookSet> getGenreToBooks() {
         return dataHandler.getGenreToBooks();
     }
 
@@ -101,11 +104,8 @@ public class Controller {
         dataHandler.addGenre(genre);
     }
 
-    public SimpleObjectProperty<ObservableMap<String, ObservableSet<Book>>> getGtbProperty() {
-        return dataHandler.getGtbProperty();
-    }
-
-    public void updateGtbProperty() {
+    public void setObservedBooksListener(SetChangeListener<? super Book> listener) {
+        dataHandler.setObservedBooksListener(listener);
     }
 
 }

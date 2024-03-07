@@ -14,7 +14,7 @@ public class GenericUser implements java.io.Serializable {
         return username;
     }
 
-    public String getPassword() {
-        return password;
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
     }
 }

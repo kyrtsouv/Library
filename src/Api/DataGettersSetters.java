@@ -3,37 +3,44 @@ package Api;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.TreeSet;
 
 public class DataGettersSetters implements Serializable {
 
-    protected HashMap<String, GenericUser> users;
+    protected HashMap<String, GenericUser> usernamesToUsers;
+    protected HashSet<User> users;
     protected HashSet<String> emails;
     protected HashSet<String> ADTs;
 
-    protected TreeSet<Book> books;
-    protected HashMap<String, HashSet<Book>> genreToBooks;
+    protected OrderedBookSet books;
+    protected HashSet<String> genres;
+    protected HashMap<String, OrderedBookSet> genreToBooks;
     protected HashMap<Book, String> bookToGenre;
 
     public DataGettersSetters() {
-        users = new HashMap<>();
+        usernamesToUsers = new HashMap<>();
+        users = new HashSet<>();
         emails = new HashSet<>();
         ADTs = new HashSet<>();
 
-        books = new TreeSet<>();
+        books = new OrderedBookSet();
+        genres = new HashSet<>();
         genreToBooks = new HashMap<>();
         bookToGenre = new HashMap<>();
     }
 
-    public static DataGettersSetters load() {
-        return new DataGettersSetters();
-    }
+    // public static DataGettersSetters load() {
+    // return new DataGettersSetters();
+    // }
 
-    public void save() {
-    }
+    // public void save() {
+    // }
 
     // ----------------- Getters -----------------
-    public HashMap<String, GenericUser> getUsers() {
+    public HashMap<String, GenericUser> getUsernamesToUsers() {
+        return usernamesToUsers;
+    }
+
+    public HashSet<User> getUsers() {
         return users;
     }
 
@@ -45,7 +52,11 @@ public class DataGettersSetters implements Serializable {
         return ADTs;
     }
 
-    public TreeSet<Book> getBooks() {
+    public HashSet<String> getGenres() {
+        return genres;
+    }
+
+    public OrderedBookSet getBooks() {
         return books;
     }
 
@@ -53,12 +64,16 @@ public class DataGettersSetters implements Serializable {
         return bookToGenre;
     }
 
-    public HashMap<String, HashSet<Book>> getGenreToBooks() {
+    public HashMap<String, OrderedBookSet> getGenreToBooks() {
         return genreToBooks;
     }
 
     // ----------------- Setters -----------------
-    public void setUsers(HashMap<String, GenericUser> users) {
+    public void setUsernamesToUsers(HashMap<String, GenericUser> usernamesToUsers) {
+        this.usernamesToUsers = usernamesToUsers;
+    }
+
+    public void setUsers(HashSet<User> users) {
         this.users = users;
     }
 
@@ -70,15 +85,19 @@ public class DataGettersSetters implements Serializable {
         this.ADTs = ADTs;
     }
 
-    public void setBooks(TreeSet<Book> books) {
+    public void setBooks(OrderedBookSet books) {
         this.books = books;
+    }
+
+    public void setGenres(HashSet<String> genres) {
+        this.genres = genres;
     }
 
     public void setBookToGenre(HashMap<Book, String> bookToGenre) {
         this.bookToGenre = bookToGenre;
     }
 
-    public void setGenreToBooks(HashMap<String, HashSet<Book>> genreToBooks) {
+    public void setGenreToBooks(HashMap<String, OrderedBookSet> genreToBooks) {
         this.genreToBooks = genreToBooks;
     }
 }

@@ -10,7 +10,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -21,7 +20,10 @@ import javafx.scene.layout.BorderWidths;
 import java.util.HashMap;
 
 import Api.GenericUser;
+import Api.OrderedBookSet;
 import Api.User;
+import Api.Book;
+
 import MVC.Controller;
 
 public class HomePane extends Pane {
@@ -64,10 +66,15 @@ public class HomePane extends Pane {
         books.setVgap(10);
         books.setPadding(new Insets(10));
 
-        int i = 0;
-        while (i < 5 && controller.getBooks().iterator().hasNext()) {
-            books.getChildren().add(new BookPane(controller.getBooks().iterator().next()));
-            i++;
+        OrderedBookSet booksSet = controller.getBooks();
+        int count = 0;
+        for (Book book : booksSet) {
+            if (count >= 5) {
+                break;
+            }
+            BookPane bookPane = new BookPane(book);
+            books.getChildren().add(bookPane);
+            count++;
         }
 
         panel.setTop(login);
