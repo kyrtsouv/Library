@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Setup",
+            "request": "launch",
+            "mainClass": "Setup",
+            "projectName": "Library_b524ee1c"
+        },
+        {
+            "type": "java",
             "name": "MakeAdmin",
             "request": "launch",
             "mainClass": "MakeAdmin",
@@ -15,7 +22,7 @@
             "type": "java",
             "name": "Main",
             "request": "launch",
-            "mainClass": "MVC.Main",
+            "mainClass": "MVC.App",
             "projectName": "Library_b524ee1c",
             "vmArgs": "--module-path C:/\"Program Files\"/Java/javafx-sdk-21.0.2/lib --add-modules javafx.controls,javafx.fxml"
         },
