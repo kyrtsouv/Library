@@ -14,6 +14,9 @@ import javafx.scene.control.Dialog;
 import Api.Book;
 import MVC.Controller;
 
+/*
+ * The AddBook class is a dialog that is used to fill in the details of a new book.
+ */
 public class AddBook extends Dialog<Book> {
     private Controller controller;
 

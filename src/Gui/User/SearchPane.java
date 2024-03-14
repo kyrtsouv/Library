@@ -11,10 +11,17 @@ import javafx.scene.layout.VBox;
 
 import Gui.Common.BookPane;
 import Gui.Common.Buildable;
+
+import java.util.HashSet;
+
 import Api.Book;
-import Api.OrderedBookSet;
 import Api.User;
 import MVC.Controller;
+
+/*
+ * The SearchPane class is a pane that allows the user to search for books, view their details and lend them.
+ * It contains a side bar with search fields and a results pane that displays the results of the search.
+ */
 
 public class SearchPane extends Buildable {
 
@@ -81,7 +88,7 @@ public class SearchPane extends Buildable {
             build(controller.getBooks());
         }
 
-        public void build(OrderedBookSet results) {
+        public void build(HashSet<Book> results) {
             getChildren().clear();
             setStyle("-fx-padding: 5; -fx-spacing: 5;");
 

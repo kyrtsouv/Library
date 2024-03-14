@@ -1,4 +1,4 @@
-package Gui.Admin.ManagementPanels;
+package Gui.Admin.ManagementPanes;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -8,6 +8,10 @@ import Api.Lending;
 import Gui.Common.Buildable;
 import MVC.Controller;
 
+/*
+ * The Lendings class is a pane that displays all the lendings in the library and
+ * allows the admin to report the return of a book.
+ */
 public class Lendings extends Buildable {
 
     private Controller controller;

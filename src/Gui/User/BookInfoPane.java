@@ -8,6 +8,9 @@ import javafx.scene.layout.VBox;
 import Api.Book;
 import Gui.Common.Buildable;
 
+/*
+ * The BookInfoPane class is a pane that displays all the details of a book.
+ */
 public class BookInfoPane extends Buildable {
     private Book book;
 

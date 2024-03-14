@@ -13,34 +13,38 @@ import Api.Admin;
 import Api.Book;
 import Api.GenericUser;
 import Api.Lending;
-import Api.OrderedBookSet;
 import Api.Review;
 import Api.User;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+/**
+ * The Data class is responsible for managing the data of the library
+ * application.
+ * It contains the data model and is responsible for loading and saving the
+ * data.
+ * 
+ * It has methods for:
+ * 1) getting the different collections of objects and
+ * 2) adding, updating and deleting users, books, genres and lendings.
+ */
 
 public class Data implements java.io.Serializable {
 
-    private HashMap<String, GenericUser> users;
+    private HashMap<String, GenericUser> usernamesToUsers;
 
     private HashSet<String> emails;
     private HashSet<String> ADTs;
-    private HashSet<String> usernames;
 
-    private OrderedBookSet books;
-    private HashMap<String, OrderedBookSet> genreToBooks;
+    private HashSet<Book> books;
+    private HashMap<String, HashSet<Book>> genreToBooks;
 
     private HashSet<Lending> lendings;
 
     private Data() {
-        users = new HashMap<>();
+        usernamesToUsers = new HashMap<>();
         emails = new HashSet<>();
         ADTs = new HashSet<>();
-        usernames = new HashSet<>();
 
-        books = new OrderedBookSet();
+        books = new HashSet<>();
         genreToBooks = new HashMap<>();
 
         lendings = new HashSet<>();
@@ -60,13 +64,9 @@ public class Data implements java.io.Serializable {
 
     public void save() {
         try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("medialab/tempData.ser"));
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("medialab/data.ser"));
             out.writeObject(this);
             out.close();
-
-            Files.copy(Paths.get("medialab/tempData.ser"), Paths.get("medialab/data.ser"),
-                    StandardCopyOption.REPLACE_EXISTING);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,32 +74,35 @@ public class Data implements java.io.Serializable {
 
     // ----------------- Getters -----------------
     public GenericUser getUser(String username, String password) {
-        GenericUser user = users.get(username);
+        GenericUser user = usernamesToUsers.get(username);
         if (user != null && user.getPassword().equals(password)) {
             return user;
         }
         throw new IllegalArgumentException("Λάθος όνομα χρήστη ή κωδικός πρόσβασης");
     }
 
-    public OrderedBookSet getBooks() {
+    public HashSet<Book> getBooks() {
         return books;
     }
 
-    public HashMap<String, OrderedBookSet> getGenreToBooks() {
+    public HashMap<String, HashSet<Book>> getGenreToBooks() {
         return genreToBooks;
     }
 
-    public HashMap<String, GenericUser> getUsers() {
-        return users;
+    public HashMap<String, GenericUser> getUsernamesToUsers() {
+        return usernamesToUsers;
     }
 
     public HashSet<Lending> getLendings() {
         return lendings;
     }
 
-    public OrderedBookSet searchBooks(String title, String author, String year) {
-        return books.stream().filter(book -> book.getTitle().contains(title) && book.getAuthor().contains(author)
-                && book.getYear().contains(year)).collect(Collectors.toCollection(OrderedBookSet::new));
+    public HashSet<Book> searchBooks(String title, String author, String year) {
+        return books.stream()
+                .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase())
+                        && book.getAuthor().toLowerCase().contains(author.toLowerCase())
+                        && book.getYear().toLowerCase().contains(year.toLowerCase()))
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
     // ----------------- Adders -----------------
@@ -109,30 +112,27 @@ public class Data implements java.io.Serializable {
             throw new IllegalArgumentException("Όλα τα πεδία είναι υποχρεωτικά");
         }
         if (emails.contains(user.getEmail()) || ADTs.contains(user.getADT())
-                || usernames.contains(user.getUsername())) {
+                || usernamesToUsers.keySet().contains(user.getUsername())) {
             throw new IllegalArgumentException("Το Email ή ΑΔΤ ή Όνομα Χρήστη χρησιμοποιούνται ήδη");
         }
 
-        users.put(user.getUsername(), user);
+        usernamesToUsers.put(user.getUsername(), user);
         emails.add(user.getEmail());
         ADTs.add(user.getADT());
-        usernames.add(user.getUsername());
     }
 
     public void addBook(Book book) {
         books.add(book);
-        book.addSet(books);
         genreToBooks.get(book.getGenre()).add(book);
-        book.addSet(genreToBooks.get(book.getGenre()));
     }
 
     public void addAdmin(Admin admin) {
-        users.put(admin.getUsername(), admin);
+        usernamesToUsers.put(admin.getUsername(), admin);
     }
 
     public void addGenre(String genre) {
         if (!genreToBooks.containsKey(genre)) {
-            genreToBooks.put(genre, new OrderedBookSet());
+            genreToBooks.put(genre, new HashSet<Book>());
         }
     }
 
@@ -143,16 +143,17 @@ public class Data implements java.io.Serializable {
 
     // ----------------- Updaters -----------------
     public void updateGenre(String oldGenre, String newGenre) {
-        OrderedBookSet affectedBooks = genreToBooks.get(oldGenre);
+        HashSet<Book> affectedBooks = genreToBooks.get(oldGenre);
         genreToBooks.remove(oldGenre);
         if (newGenre.equals("")) {
             for (Book book : affectedBooks) {
                 books.remove(book);
+                lendings.removeIf(lending -> lending.getBook().equals(book));
             }
             return;
         }
         if (!genreToBooks.containsKey(newGenre)) {
-            genreToBooks.put(newGenre, new OrderedBookSet());
+            genreToBooks.put(newGenre, new HashSet<Book>());
         }
         genreToBooks.get(newGenre).addAll(affectedBooks);
         for (Book book : affectedBooks) {
@@ -161,15 +162,24 @@ public class Data implements java.io.Serializable {
     }
 
     public void updateBook(Book oldBook, Book newBook) {
+        genreToBooks.get(oldBook.getGenre()).remove(oldBook);
+
         oldBook.setTitle(newBook.getTitle());
         oldBook.setAuthor(newBook.getAuthor());
-        books.remove(oldBook);
-        genreToBooks.get(oldBook.getGenre()).remove(oldBook);
-        books.add(newBook);
-        genreToBooks.get(newBook.getGenre()).add(newBook);
+        oldBook.setGenre(newBook.getGenre());
+        oldBook.setPublisher(newBook.getPublisher());
+        oldBook.setIsbn(newBook.getIsbn());
+        oldBook.setYear(newBook.getYear());
+        oldBook.setTotalCopies(newBook.getTotalCopies());
+
+        genreToBooks.get(newBook.getGenre()).add(oldBook);
     }
 
     public void updateUser(User oldUser, User newUser) {
+        usernamesToUsers.remove(oldUser.getUsername());
+        emails.remove(oldUser.getEmail());
+        ADTs.remove(oldUser.getADT());
+
         oldUser.setUsername(newUser.getUsername());
         oldUser.setPassword(newUser.getPassword());
         oldUser.setName(newUser.getName());
@@ -177,17 +187,9 @@ public class Data implements java.io.Serializable {
         oldUser.setEmail(newUser.getEmail());
         oldUser.setADT(newUser.getADT());
 
-        users.remove(newUser.getUsername());
-        users.put(newUser.getUsername(), oldUser);
-
-        emails.remove(oldUser.getEmail());
+        usernamesToUsers.put(newUser.getUsername(), oldUser);
         emails.add(newUser.getEmail());
-
-        ADTs.remove(oldUser.getADT());
         ADTs.add(newUser.getADT());
-
-        usernames.remove(oldUser.getUsername());
-        usernames.add(newUser.getUsername());
     }
 
     public void lendBook(Book book, User user) {
@@ -201,26 +203,32 @@ public class Data implements java.io.Serializable {
     public void deleteBook(Book book) {
         books.remove(book);
         genreToBooks.get(book.getGenre()).remove(book);
+        lendings.removeIf(lending -> lending.getBook().equals(book));
     }
 
     public void deleteUser(User user) {
-        users.remove(user.getUsername());
+        usernamesToUsers.remove(user.getUsername());
         emails.remove(user.getEmail());
         ADTs.remove(user.getADT());
-        usernames.remove(user.getUsername());
 
-        for (Book book : lendings.stream().map(lending -> lending.getBook()).peek(book -> book.decreaseTotalCopies())
-                .collect(Collectors.toSet())) {
-            if (book.getTotalCopies() == 0) {
-                deleteBook(book);
+        lendings.removeIf(lending -> {
+            if (lending.getUser().equals(user)) {
+                Book book = lending.getBook();
+                book.decreaseTotalCopies();
+                if (book.getTotalCopies() == 0) {
+                    books.remove(book);
+                    genreToBooks.get(book.getGenre()).remove(book);
+                }
+                return true;
             }
-        }
+            return false;
+        });
     }
 
     public void deleteLending(Lending lending) {
         lendings.remove(lending);
         lending.getBook().increaseAvailableCopies();
 
-        lending.getUser().getActiveLendings().remove(lending.getBook());
+        lending.getUser().removeLending(lending.getBook());
     }
 }

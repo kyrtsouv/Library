@@ -9,6 +9,10 @@ import javafx.scene.layout.VBox;
 import Api.User;
 import Gui.Common.Buildable;
 
+/*
+ * The UDashboard class is a pane that displays the dashboard of the user.
+ * It contains buttons that allow the user to move to the panes for searching books and viewing lendings.
+ */
 public class UDashboard extends Buildable {
 
     private Controller controller;

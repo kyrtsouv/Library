@@ -1,4 +1,4 @@
-package Gui.Admin.ManagementPanels;
+package Gui.Admin.ManagementPanes;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -14,6 +14,10 @@ import java.util.Optional;
 import Gui.Common.Buildable;
 import MVC.Controller;
 
+/*
+ * The Genres class is a pane that displays all the genres in the library and
+ * allows the admin to add new genres, edit or delete existing ones.
+ */
 public class Genres extends Buildable {
 
     private Controller controller;
@@ -50,6 +54,7 @@ public class Genres extends Buildable {
 
     private VBox buildList() {
         VBox list = new VBox();
+        list.setStyle("-fx-spacing: 5;");
         for (String genre : controller.getGenres()) {
             TextField genreField = new TextField(genre);
             genreField.focusedProperty().addListener((obs, oldVal, newVal) -> {
@@ -77,6 +82,7 @@ public class Genres extends Buildable {
                     this.requestFocus();
                 }
             });
+            list.getChildren().add(genreField);
         }
 
         return list;

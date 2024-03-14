@@ -3,8 +3,13 @@ package Gui.Common;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
+import java.text.DecimalFormat;
+
 import Api.Book;
 
+/*
+ * The BookPane class is a pane that displays the basic details of a book.
+ */
 public class BookPane extends GridPane {
 
     public BookPane(Book book) {
@@ -20,14 +25,14 @@ public class BookPane extends GridPane {
         add(new Label(book.getIsbn()), 1, 2);
 
         add(new Label("Βαθμολογία: "), 0, 3);
-        add(new Label(String.valueOf(book.getRating())), 1, 3);
+        add(new Label(String.valueOf(new DecimalFormat("#.##").format(book.getRating()))), 1, 3);
 
         add(new Label("Αξιολογήσεις: "), 0, 4);
         add(new Label(String.valueOf(book.getReviews().size())), 1, 4);
     }
 
     public BookPane addBorder() {
-        setStyle("-fx-border-color: black; -fx-border-width: 1px;");
+        setStyle("-fx-border-color: black; -fx-border-width: 1px;" + getStyle());
         return this;
     }
 

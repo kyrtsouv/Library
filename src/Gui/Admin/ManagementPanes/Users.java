@@ -1,4 +1,4 @@
-package Gui.Admin.ManagementPanels;
+package Gui.Admin.ManagementPanes;
 
 import java.util.Optional;
 
@@ -11,6 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+/*
+ * The Users class is a pane that contains all the users of the library.
+ * It allows the admin to edit the information of a user or delete a user.
+ */
 public class Users extends Buildable {
 
     private Controller controller;
@@ -29,9 +33,10 @@ public class Users extends Buildable {
 
         for (User user : controller.getUsers()) {
             Button editUserButton = new Button();
-            editUserButton.setGraphic(new UserPane(user));
+            UserPane userPane = new UserPane(user);
+            editUserButton.setGraphic(userPane);
             editUserButton.setOnAction(e -> {
-                Optional<User> result = new EditUser(controller, user).showAndWait();
+                Optional<User> result = new EditUser(controller, userPane.getUser()).showAndWait();
                 if (result.isPresent()) {
                     User newUser = result.get();
                     controller.updateUser(user, newUser);
@@ -46,7 +51,10 @@ public class Users extends Buildable {
     }
 
     private class UserPane extends GridPane {
+        private User user;
+
         public UserPane(User user) {
+            this.user = user;
 
             setStyle(
                     "-fx-padding: 5px; -fx-hgap: 5px; -fx-vgap: 5px;");
@@ -68,6 +76,10 @@ public class Users extends Buildable {
 
             add(new Label("Κωδικός: "), 0, 5);
             add(new Label(user.getPassword()), 1, 5);
+        }
+
+        private User getUser() {
+            return user;
         }
     }
 

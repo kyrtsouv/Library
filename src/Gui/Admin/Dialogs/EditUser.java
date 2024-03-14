@@ -12,6 +12,9 @@ import javafx.scene.layout.GridPane;
 import Api.User;
 import MVC.Controller;
 
+/*
+ * The EditUser class is a dialog that is used to edit the information of a user.
+ */
 public class EditUser extends Dialog<User> {
 
     private User user;
@@ -26,6 +29,7 @@ public class EditUser extends Dialog<User> {
     private Label errorLabel;
 
     public EditUser(Controller controller, User user) {
+        this.user = user;
 
         setTitle("Επεξεργασία Χρήστη");
 

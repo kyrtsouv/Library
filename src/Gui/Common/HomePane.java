@@ -10,13 +10,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 
-import java.util.Iterator;
+import java.util.Comparator;
 
 import Api.Book;
 import Api.GenericUser;
 import Api.User;
 import MVC.Controller;
 
+/*
+ * The HomePane class is a pane that is displayed when the application starts.
+ * It contains the login and sign up forms and the top rated books.
+ */
 public class HomePane extends Buildable {
 
     private Controller controller;
@@ -40,9 +44,9 @@ public class HomePane extends Buildable {
         Line line = new Line();
         line.setStyle("-fx-stroke: black; -fx-stroke-width: 2; ");
         line.startXProperty().bind(top.widthProperty().divide(2));
-        line.startYProperty().bind(top.heightProperty());
         line.endXProperty().bind(bot.widthProperty().divide(2));
-        line.endYProperty().bind(bot.layoutYProperty().subtract(10));
+        line.startYProperty().bind(top.heightProperty());
+        line.endYProperty().bind(bot.layoutYProperty().subtract(6));
 
         forms.getChildren().addAll(new SignUpForm(), line, new SignInForm());
         forms.setStyle(
@@ -55,12 +59,13 @@ public class HomePane extends Buildable {
         FlowPane books = new FlowPane();
         books.setStyle("-fx-hgap: 10; -fx-vgap: 10; -fx-padding: 5;");
 
-        int i = 0;
-        Iterator<Book> bookIterator = controller.getBooks().iterator();
-        while (i < 5 && bookIterator.hasNext()) {
-            books.getChildren().add(new BookPane(bookIterator.next()).addBorder());
-            i++;
-        }
+        controller.getBooks()
+                .stream()
+                .sorted(Comparator.comparing(Book::getRating, Comparator.reverseOrder()).thenComparing(Book::hashCode))
+                .limit(5)
+                .forEach(book -> {
+                    books.getChildren().add(new BookPane(book).addBorder());
+                });
 
         root.setTop(login);
         root.setCenter(books);

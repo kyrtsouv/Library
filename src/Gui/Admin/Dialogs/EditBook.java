@@ -14,6 +14,9 @@ import javafx.scene.layout.GridPane;
 import Api.Book;
 import MVC.Controller;
 
+/*
+ * The EditBook class is a dialog that that is used to edit the details of a book.
+ */
 public class EditBook extends Dialog<Book> {
     private Controller controller;
     private Book book;

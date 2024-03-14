@@ -8,6 +8,10 @@ import javafx.scene.control.Button;
 import Gui.Common.Buildable;
 import MVC.Controller;
 
+/*
+ * The ADashboard class is a pane that displays the dashboard of the admin.
+ * It contains buttons that allow the admin to move to the different management panes.
+ */
 public class ADashboard extends Buildable {
 
     private Controller controller;

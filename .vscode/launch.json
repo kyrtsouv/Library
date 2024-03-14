@@ -6,16 +6,16 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Setup",
+            "name": "Test",
             "request": "launch",
-            "mainClass": "Setup",
+            "mainClass": "Test",
             "projectName": "Library_b524ee1c"
         },
         {
             "type": "java",
-            "name": "MakeAdmin",
+            "name": "Setup",
             "request": "launch",
-            "mainClass": "MakeAdmin",
+            "mainClass": "Setup",
             "projectName": "Library_b524ee1c"
         },
         {

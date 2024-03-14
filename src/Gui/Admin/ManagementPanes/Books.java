@@ -1,4 +1,4 @@
-package Gui.Admin.ManagementPanels;
+package Gui.Admin.ManagementPanes;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -8,16 +8,20 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
 
 import Api.Book;
-import Api.OrderedBookSet;
 import Gui.Admin.Dialogs.AddBook;
 import Gui.Admin.Dialogs.EditBook;
 import Gui.Common.BookPane;
 import Gui.Common.Buildable;
 import MVC.Controller;
 
+/*
+ * The Books class is a pane that displays all the books in the library and
+ * allows the admin to add new books, edit or delete existing ones.
+ */
 public class Books extends Buildable {
 
     private Controller controller;
@@ -41,14 +45,13 @@ public class Books extends Buildable {
             }
         });
 
-        HBox addButtonBox = new HBox();
+        HBox addButtonBox = new HBox(addButton);
         addButtonBox.setStyle("-fx-alignment: center;");
-        addButtonBox.getChildren().add(addButton);
 
         VBox booksBox = new VBox();
         booksBox.setStyle("-fx-alignment: center;");
 
-        HashMap<String, OrderedBookSet> gtb = controller.getGenreToBooks();
+        HashMap<String, HashSet<Book>> gtb = controller.getGenreToBooks();
         for (String genre : gtb.keySet()) {
             if (!gtb.get(genre).isEmpty()) {
 
@@ -64,8 +67,7 @@ public class Books extends Buildable {
                     bookButton.setOnAction(e -> {
                         Optional<Book> result = new EditBook(book, controller).showAndWait();
                         if (result.isPresent()) {
-                            Book newBook = result.get();
-                            controller.updateBook(book, newBook);
+                            controller.updateBook(book, result.get());
                         }
                         build();
                     });

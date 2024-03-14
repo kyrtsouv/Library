@@ -2,16 +2,15 @@ package MVC;
 
 import Api.GenericUser;
 import Api.Lending;
-import Api.OrderedBookSet;
 import Api.Review;
 import Api.User;
 import Api.Book;
 
 import Gui.Admin.ADashboard;
-import Gui.Admin.ManagementPanels.Books;
-import Gui.Admin.ManagementPanels.Genres;
-import Gui.Admin.ManagementPanels.Lendings;
-import Gui.Admin.ManagementPanels.Users;
+import Gui.Admin.ManagementPanes.Books;
+import Gui.Admin.ManagementPanes.Genres;
+import Gui.Admin.ManagementPanes.Lendings;
+import Gui.Admin.ManagementPanes.Users;
 import Gui.User.BookInfoPane;
 import Gui.User.LendingsPane;
 import Gui.User.SearchPane;
@@ -22,6 +21,18 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * The Controller class is responsible for managing the interactions between the
+ * user interface and the data model in the library application.
+ * It handles user actions and updates the data accordingly.
+ * 
+ * It also contains the data model.
+ * 
+ * It has methods for:
+ * 1) showing the different panes of the application
+ * 2) getting the data from the Data object and
+ * 3) adding, updating and deleting data.
+ */
 public class Controller {
 
     private App app;
@@ -39,7 +50,6 @@ public class Controller {
     }
 
     // ----------------- Show Panes -----------------
-
     public void showBooksManagerPane() {
         app.setView(new Books(this), true);
     }
@@ -85,7 +95,7 @@ public class Controller {
         return data.getUser(username, password);
     }
 
-    public OrderedBookSet getBooks() {
+    public HashSet<Book> getBooks() {
         return data.getBooks();
     }
 
@@ -93,12 +103,13 @@ public class Controller {
         return data.getGenreToBooks().keySet();
     }
 
-    public HashMap<String, OrderedBookSet> getGenreToBooks() {
+    public HashMap<String, HashSet<Book>> getGenreToBooks() {
         return data.getGenreToBooks();
     }
 
     public Set<User> getUsers() {
-        return data.getUsers().values().stream().filter(user -> user instanceof User).map(userPane -> (User) userPane)
+        return data.getUsernamesToUsers().values().stream().filter(user -> user instanceof User)
+                .map(userPane -> (User) userPane)
                 .collect(Collectors.toSet());
     }
 
@@ -106,7 +117,7 @@ public class Controller {
         return data.getLendings();
     }
 
-    public OrderedBookSet searchBooks(String title, String author, String year) {
+    public HashSet<Book> searchBooks(String title, String author, String year) {
         return data.searchBooks(title, author, year);
     }
 
@@ -126,8 +137,8 @@ public class Controller {
     public void addReview(Book book, User user, Review review) {
         data.addReview(book, user, review);
     }
-    // ----------------- Updaters -----------------
 
+    // ----------------- Updaters -----------------
     public void updateGenre(String oldGenre, String newGenre) {
         data.updateGenre(oldGenre, newGenre);
     }

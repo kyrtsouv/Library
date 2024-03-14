@@ -16,6 +16,9 @@ import Gui.Common.BookPane;
 import Gui.Common.Buildable;
 import MVC.Controller;
 
+/*
+ * The LendingsPane class is a pane that displays the books that the user is currently lending and allows the user to add reviews for them.
+ */
 public class LendingsPane extends Buildable {
     private Controller controller;
     private User user;
@@ -58,6 +61,10 @@ public class LendingsPane extends Buildable {
         getChildren().add(root);
     }
 
+    /*
+     * The ReviewDialog class is a dialog that allows the user to add a review for a
+     * book.
+     */
     private class ReviewDialog extends Dialog<Review> {
 
         public ReviewDialog(Book book) {
